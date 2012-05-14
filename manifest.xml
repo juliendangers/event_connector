@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin_manifest>
+        <field key="author" value="Julien Crestin &lt;jcrestin@human-connect.com&gt;" />
+        <field key="version" value="0.5" />
+        <field key="description" value="Elgg event connector plugin. Export/Import events." />
+        <field key="website" value="http://blog.juliencrestin.com/" />
+        <field key="copyright" value="(C) Julien Crestin 2010-2011" />
+        <field key="licence" value="GNU Public License version 2" />
+        <field key="elgg_version" value="2009030101" />
+</plugin_manifest>
