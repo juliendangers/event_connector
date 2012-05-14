@@ -8,11 +8,45 @@
 register_elgg_event_handler('init', 'system', 'event_connector_init');
 
 function event_connector_init() {
+	
+	// Register a page handler, so we can have nice URLs
+	elgg_register_page_handler('event_connector', 'event_connector_page_handler');
+	
 	register_elgg_event_handler('pagesetup', 'system', 'event_connector_pagesetup');
 
 	// Register actions
 	register_action("import_ical", elgg_get_plugins_path() . "event_connector/actions/event_connector/import.php");
 
+}
+
+/**
+ * Dispatcher for ical.
+ * URLs take the form of
+ *  Import events:    event_connector/import/<guid>
+ * 
+ * @param array $page
+ * @return bool
+ */
+function event_connector_page_handler($page) {
+error_log("hola");
+	if (!isset($page[0])) {
+		$page[0] = 'import';
+	}
+
+	elgg_push_breadcrumb(elgg_echo('event_calendar:show_events_title'), 'event_calendar/list');
+
+	$base_dir = elgg_get_plugins_path() . 'event_connector/pages/event_connector';
+
+	$page_type = $page[0];
+	switch ($page_type) {
+		case 'import':
+			set_input('guid', $page[1]);
+			include "$base_dir/import.php";
+			break;
+		default:
+			return false;
+	}
+	return true;
 }
 
 function event_connector_pagesetup() {
@@ -34,22 +68,21 @@ function event_connector_pagesetup() {
 		$param .= "&offset={$offset}";
 	if($region)
 		$param .= "&region={$region}";
-	if (get_context() == 'event_calendar' && !(strpos($_SERVER['REQUEST_URI'], '/manage_event')) && !(strpos($_SERVER['REQUEST_URI'], '/delete_confirm')) && !(strpos($_SERVER['REQUEST_URI'], '/event_connector'))) {
+	if (elgg_get_context() == 'event_calendar' && !(strpos($_SERVER['REQUEST_URI'], '/manage_event')) && !(strpos($_SERVER['REQUEST_URI'], '/delete_confirm')) && !(strpos($_SERVER['REQUEST_URI'], '/event_connector'))) {
 		if($event_id ) {
 			add_submenu_item(elgg_echo('event_connector:menu:one'), elgg_get_site_url() . "mod/event_connector/export_event.php?event_id={$event_id}");
 		}
 		else {
 			add_submenu_item(elgg_echo('event_connector:menu:all'), elgg_get_site_url() . "mod/event_connector/export_events.php?{$param}");
 		}
-		add_submenu_item(elgg_echo('event_connector:import:title'), elgg_get_site_url() . "mod/event_connector/import.php");
-	} else if(get_context() == 'groups' && strpos($_SERVER['REQUEST_URI'], 'event_calendar/') && !(strpos($_SERVER['REQUEST_URI'], '/manage_event')) && !(strpos($_SERVER['REQUEST_URI'], '/delete_confirm')) && !(strpos($_SERVER['REQUEST_URI'], '/event_connector'))) {
+		elgg_register_title_button('event_connector', 'import');
+	} else if(elgg_get_context() == 'groups' && strpos($_SERVER['REQUEST_URI'], 'event_calendar/') && !(strpos($_SERVER['REQUEST_URI'], '/manage_event')) && !(strpos($_SERVER['REQUEST_URI'], '/delete_confirm')) && !(strpos($_SERVER['REQUEST_URI'], '/event_connector'))) {
 		if($event_id) {
 			add_submenu_item(elgg_echo('event_connector:menu:title'), elgg_get_site_url() . "mod/event_connector/export_event.php?event_id={$event_id}");
 		}
 		else {
 			add_submenu_item(elgg_echo('event_connector:menu:title'), elgg_get_site_url() . "mod/event_connector/export_events.php?{$param}");
 		}
-		$group = (int)get_input('group_guid');
-		add_submenu_item(elgg_echo('event_connector:import:title'), elgg_get_site_url() . "mod/event_connector/import.php?group_guid={$group}");
+		elgg_register_title_button('event_connector', 'import');
 	}
 }
