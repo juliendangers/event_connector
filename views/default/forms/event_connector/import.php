@@ -9,7 +9,7 @@
 <div>
 	<label><?php echo elgg_echo("event_connector:upload:file"); ?></label>
 	<br />
-	<?php echo elgg_view("input/file",array('name' => 'upload')); ?>
+	<?php echo elgg_view("input/file", array('name' => 'upload')); ?>
 </div>
 <div>
 	<label><?php echo elgg_echo('access'); ?></label>

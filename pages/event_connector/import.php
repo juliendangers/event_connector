@@ -23,8 +23,9 @@ elgg_set_page_owner_guid($container->getGUID());
 $title = elgg_echo('event_connector:upload');
 elgg_push_breadcrumb($title);
 
+$form_vars = array('enctype' => 'multipart/form-data');
 $vars = array('container_guid' => $container_guid);
-$content = elgg_view_form('event_connector/import', array(), $vars);
+$content = elgg_view_form('event_connector/import', $form_vars, $vars);
 
 $body = elgg_view_layout('content', array(
 	'filter' => '',

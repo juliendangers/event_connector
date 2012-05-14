@@ -5,17 +5,19 @@
  * @package ElggEventConnector
  */
 
-register_elgg_event_handler('init', 'system', 'event_connector_init');
+elgg_register_event_handler('init', 'system', 'event_connector_init');
 
 function event_connector_init() {
+	
+	elgg_register_library('vendors:icalcreator', elgg_get_plugins_path() . 'event_connector/vendors/iCalcreator.class.php');
 	
 	// Register a page handler, so we can have nice URLs
 	elgg_register_page_handler('event_connector', 'event_connector_page_handler');
 	
-	register_elgg_event_handler('pagesetup', 'system', 'event_connector_pagesetup');
+	elgg_register_event_handler('pagesetup', 'system', 'event_connector_pagesetup');
 
 	// Register actions
-	register_action("import_ical", elgg_get_plugins_path() . "event_connector/actions/event_connector/import.php");
+	elgg_register_action("event_connector/import", elgg_get_plugins_path() . "event_connector/actions/event_connector/import.php");
 
 }
 
@@ -28,7 +30,6 @@ function event_connector_init() {
  * @return bool
  */
 function event_connector_page_handler($page) {
-error_log("hola");
 	if (!isset($page[0])) {
 		$page[0] = 'import';
 	}
